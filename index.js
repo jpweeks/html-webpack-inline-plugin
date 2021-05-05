@@ -4,7 +4,6 @@ const { inlineSource } = require('inline-source')
 class HtmlWebpackInlinePlugin {
   constructor (options) {
     this.options = options
-    console.log({ options })
   }
 
   apply (compiler) {
