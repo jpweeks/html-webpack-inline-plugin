@@ -1,15 +1,19 @@
 {
-  "name": "html-webpack-inline-plugin",
-  "version": "0.0.4",
+  "name": "@jpweeks/html-webpack-inline-plugin",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "storkyeh storkyeh@gmail.com",
-  "repository": "git://github.com/storkyeh/html-webpack-inline-plugin.git",
+  "author": "Jay Weeks",
+  "contributors": [
+    "storkyeh storkyeh@gmail.com"
+  ],
+  "repository": "git://github.com/jpweeks/html-webpack-inline-plugin.git",
   "license": "MIT",
   "dependencies": {
-    "inline-source": "^5.2.4"
+    "html-webpack-plugin": "^4.5.2",
+    "inline-source": "^7.2.0"
   }
 }

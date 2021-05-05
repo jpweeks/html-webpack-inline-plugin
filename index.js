@@ -1,46 +1,31 @@
-var inline = require('inline-source')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { inlineSource } = require('inline-source')
 
-function HtmlWebpackInlinePlugin(options) {
-  // Setup the plugin instance with options...
-  this.options = options
-}
+class HtmlWebpackInlinePlugin {
+  constructor (options) {
+    this.options = options
+    console.log({ options })
+  }
 
-HtmlWebpackInlinePlugin.prototype.apply = function(compiler) {
-  let self = this
-  if (compiler.hooks) {
-    compiler.hooks.compilation.tap('HtmlWebpackInlinePlugin', compilation => {
-      if (!compilation.hooks.htmlWebpackPluginBeforeHtmlProcessing) {
-        throw new Error('The expected HtmlWebpackPlugin hook was not found! Ensure HtmlWebpackPlugin is installed and was initialized before this plugin.');
-      }
+  apply (compiler) {
+    compiler.hooks.compilation.tap('HtmlWebpackInlinePlugin', (compilation) => {
+      let hooks = HtmlWebpackPlugin.getHooks(compilation)
 
-      compilation.hooks.htmlWebpackPluginBeforeHtmlProcessing.tapAsync(
-        'HtmlWebpackInlinePlugin',
-        (htmlPluginData, callback) => {
-          var html = htmlPluginData.html
-          inline(html, self.options, function(err, html) {
-            if (err) {
-              return callback(err)
-            }
+      hooks.beforeEmit.tapAsync('Inline', (htmlPluginData, cb) => {
+        let { options } = this
+        let { html } = htmlPluginData
+
+        inlineSource(html, options)
+          .then((html) => {
             htmlPluginData.html = html
-            callback(null, htmlPluginData)
+            cb(null, htmlPluginData)
           })
-        }
-      )
-    })
-  } else {
-    compiler.plugin('compilation', (compilation, options) => {
-      compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, callback) => {
-        var html = htmlPluginData.html
-        inline(html, self.options, function(err, html) {
-          if (err) {
-            return callback(err)
-          }
-          htmlPluginData.html = html
-          callback(null, htmlPluginData)
-        })
+          .catch((err) => {
+            cb(err)
+          })
       })
     })
   }
-};
+}
 
 module.exports = HtmlWebpackInlinePlugin
